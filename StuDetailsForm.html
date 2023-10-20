@@ -45,7 +45,7 @@
                 </div>
                 <input type="button" class="btn btn-primary" id="save" value="Save" onclick="saveData();"  disabled/>
                 <input type="button" class="btn btn-primary" id="update" value="Update" onclick="updateData();" disabled/>
-                <input type="reset" class="btn btn-primary" id="reset" value="Reset" onclick="reset();" disabled/>
+                <input type="button" class="btn btn-primary" id="reset" value="Reset" onclick="resetForm();" disabled/>
             </form>
         </div>
         <script>
@@ -58,7 +58,6 @@
             const dbname="STUDENT-TABLE";
             const relationName="SCHOOL-DB";
             const dbBaseUrl="http://api.login2explore.com:5577";
-            const formEle=$('#stuForm');
             const saveBtn=$("#save");
             const updateBtn=$("#update");
             const resetBtn=$("#reset");
@@ -74,8 +73,6 @@
                     return;
                 }
                 var reqString = createGET_BY_KEYRequest(token, dbname, relationName, jsonObjStr);
-                alert(reqString);
-                console.log(reqString);
                 jQuery.ajaxSetup({ async: false });
                 var resultObj = executeCommandAtGivenBaseUrl(reqString, dbBaseUrl, "/api/irl");
                 jQuery.ajaxSetup({ async: true });
@@ -121,7 +118,6 @@
                     return;
                 }
                 var putReqStr = createPUTRequest(token, jsonObj, dbname, relationName);
-                alert(putReqStr);
                 jQuery.ajaxSetup({ async: false });
                 var resultObj =  executeCommandAtGivenBaseUrl(putReqStr, dbBaseUrl, "/api/iml");
                 jQuery.ajaxSetup({ async: true });
@@ -134,7 +130,6 @@
                     return;
                 }
                 var putReqStr = createUPDATERecordRequest(token, jsonObj, dbname, relationName, recNo);
-                alert(putReqStr);
                 jQuery.ajaxSetup({ async: false });
                 var resultObj =  executeCommandAtGivenBaseUrl(putReqStr, dbBaseUrl, "/api/iml");
                 jQuery.ajaxSetup({ async: true });
@@ -201,6 +196,9 @@
                 $("#bdate").prop("disabled",true);
                 $("#address").prop("disabled",true);
                 $("#edate").prop("disabled",true);
+                saveBtn.prop("disabled",true);
+                updateBtn.prop("disabled",true);
+                resetBtn.prop("disabled",true);
                 priIn.prop("disabled",false);
                 priIn.focus();
                 
