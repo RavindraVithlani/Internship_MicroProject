@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+    <head>
+        <title>Student Enrollment Form</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src="http://login2explore.com/jpdb/resources/js/0.0.3/jpdb-commons.js"></script>
+
+    </head>
+    <body>
+        
+        
+
+        <div class="container" style="max-width: 400px;">
+            <h2>Student Enrollment Form</h2>
+            <form id="stuForm" method="post">
+                <div class="form-group">
+                    <span><label for="empId"><span style="color:red">*</span>Roll No.:</label> <label id="empIdMsg"> </label></span>
+                    <input type="text" class="form-control" name="empId" id="roll" placeholder="Enter Roll Number" required onchange="getdata();"/>
+                </div>
+                <div class="form-group">
+                    <label for="empName"><span style="color:red">*</span>Full Name:</label>
+                    <input type="text" class="form-control" id="name" placeholder="Enter Full Name" name="empName" required disabled event.target./>
+                </div>
+                <div class="form-group">
+                    <label for="empName"><span style="color:red">*</span>Class</label>
+                    <input type="text" class="form-control" id="name" placeholder="Enter Class" name="empName" required disabled event.target./>
+                </div>
+                <div class="form-group">
+                    <label for="empEmail"><span style="color:red">*</span>Birth-Date</label>
+                    <input type="email" class="form-control" id="bdate" placeholder="Enter Birth Date" name="empEmail" required disabled event.target./>
+                </div>
+                <div class="form-group">
+                    <label for="empEmail"><span style="color:red">*</span>Address:</label>
+                    <input type="email" class="form-control" id="address" placeholder="Enter Address" name="empEmail" required disabled event.target./>
+                </div>
+                <div class="form-group">
+                    <label for="empEmail"><span style="color:red">*</span>Enrollment-Date:</label>
+                    <input type="email" class="form-control" id="edate" placeholder="Enter Enrollment Date" name="empEmail" required disabled event.target./>
+                </div>
+                <input type="button" class="btn btn-primary" id="save" value="Save" onclick="save();"  disabled/>
+                <input type="button" class="btn btn-primary" id="update" value="Update" onclick="update();" disabled/>
+                <input type="button" class="btn btn-primary" id="reset" value="Reset" onclick="reset();" disabled/>
+            </form>
+        </div>
+        <script>
+            /* Student Enrollment Form that will store data in STUDENT-TABLE relation of SCHOOL-DB database.
+
+                Input Fields: {Roll-No, Full-Name, Class, Birth-Date, Address, Enrollment-Date}
+
+                Primary key: Roll No. */
+            const token="90931580|-31949333931318183|90960074"
+            const dbname="STUDENT-TABLE";
+            const relationName="SCHOOL-DB";
+            const dbBaseUrl="http://api.login2explore.com:5577";
+            const formEle=$('#stuForm');
+            const saveBtn=$("#save");
+            const updateBtn=$("#update");
+            const resetBtn=$("#reset");
+            const priIn=$("#roll");
+            priIn.focus();
+
+
+            
+            function getdata() {
+                var jsonObjStr = validateAndGetFormData();
+                if (jsonStr === "") {
+                    return;
+                }
+                var reqString = createGET_BY_KEYRequest(token, dbname, relationName, jsonObjStr);
+                alert(putReqStr);
+                jQuery.ajaxSetup({ async: false });
+                var resultObj = executeCommandAtGivenBaseUrl(reqString, dbBaseUrl, "/api/irl");
+                alert(JSON.stringify(resultObj));
+                jQuery.ajaxSetup({ async: true });
+                if(resultObj.status===400){
+                    saveBtn.prop("disabled",false);
+                    resetBtn.prop("disabled",false);
+                    $("#name").prop("disabled",false);
+                    $("#name").focus();
+                    rmdis();
+                }
+                else if(resultObj.status===200){
+                    priIn.prop("disabled",true);
+                    fillForm();
+                    updateBtn.prop("disabled",false);
+                    resetBtn.prop("disabled",false);
+                    $("#name").prop("disabled",false);
+                    $("#name").focus();
+                    rmdis();
+                }
+            }
+            function rmdis(event){
+                let eles=$('input');
+                for(let i=0;i<eles.length;i++){
+                    if(eles[i].id=='roll'){
+                        continue;
+                    }
+                    eles[i].prop('disabled',false);
+                }
+            }
+            
+            function saveEmployee() {
+                var jsonStr = validateAndGetFormData();
+                if (jsonStr === "") {
+                    return;
+                }
+                var putReqStr = createPUTRequest(token, jsonStr, db, rel);
+                alert(putReqStr);
+                jQuery.ajaxSetup({ async: false });
+                var resultObj = executeCommand(putReqStr, "http://api.login2explore.com:5577", "/api/iml");
+                alert(JSON.stringify(resultObj));
+                jQuery.ajaxSetup({ async: true });
+                resetForm();
+            }
+            
+            
+            
+            function validateAndGetFormData() {
+                var empIdVar = $("#empId").val();
+                if (empIdVar === "") {
+                    alert("Employee ID Required Value");
+                    $("#empId").focus();
+                    return "";
+                }
+                var empNameVar = $("#empName").val();
+                if (empNameVar === "") {
+                    alert("Employee Name is Required Value");
+                    $("#empName").focus();
+                    return "";
+                }
+                var empEmailVar = $("#empEmail").val();
+                if (empEmailVar === "") {
+                    alert("Employee Email is Required Value");
+                    $("#empEmail").focus();
+                    return "";
+                }
+                var jsonStrObj = {
+                    empId: empIdVar,
+                    empName: empNameVar,
+                    empEmail: empEmailVar,
+                };
+                return JSON.stringify(jsonStrObj);
+            }
+            
+            function createPUTRequest(connToken, jsonObj, dbName, relName) {
+                var putRequest = "{\n" + '"token" : "' + connToken + '",' + '"dbName": "' + dbName + '",\n' + '"cmd" : "PUT",\n' + '"rel" : "' + relName + '",' + '"jsonStr": \n' + jsonObj + "\n" + "}";
+                return putRequest;
+            }
+            function executeCommand(reqString, dbBaseUrl, apiEndPointUrl) {
+                var url = dbBaseUrl + apiEndPointUrl;
+                var jsonObj;
+                $.post(url, reqString, function (result) {
+                    jsonObj = JSON.parse(result);
+                }).fail(function (result) {
+                    var dataJsonObj = result.responseText;
+                    jsonObj = JSON.parse(dataJsonObj);
+                });
+                return jsonObj;
+            }
+            function resetForm() {
+                $("#empId").val("");
+                $("#empName").val("");
+                $("#empEmail").val("");
+                $("#empId").focus();
+            }
+            
+        </script>
+    </body>
+</html>
