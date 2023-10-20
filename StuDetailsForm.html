@@ -20,32 +20,32 @@
             <h2>Student Enrollment Form</h2>
             <form id="stuForm" method="post">
                 <div class="form-group">
-                    <span><label for="empId"><span style="color:red">*</span>Roll No.:</label> <label id="empIdMsg"> </label></span>
-                    <input type="text" class="form-control" name="empId" id="roll" placeholder="Enter Roll Number" required onchange="getdata();"/>
+                    <span><label for="roll"><span style="color:red">*</span>Roll No.:</label> <label id="empIdMsg"> </label></span>
+                    <input type="text" class="form-control" id="roll" placeholder="Enter Roll Number" required onchange="getdata();"/>
                 </div>
                 <div class="form-group">
-                    <label for="empName"><span style="color:red">*</span>Full Name:</label>
-                    <input type="text" class="form-control" id="name" placeholder="Enter Full Name" name="empName" required disabled event.target./>
+                    <label for="name"><span style="color:red">*</span>Full Name:</label>
+                    <input type="text" class="form-control" id="name" placeholder="Enter Student Name"  required disabled />
                 </div>
                 <div class="form-group">
-                    <label for="empName"><span style="color:red">*</span>Class</label>
-                    <input type="text" class="form-control" id="name" placeholder="Enter Class" name="empName" required disabled event.target./>
+                    <label for="class"><span style="color:red">*</span>Class</label>
+                    <input type="text" class="form-control" id="class" placeholder="Enter Class"  required disabled />
                 </div>
                 <div class="form-group">
-                    <label for="empEmail"><span style="color:red">*</span>Birth-Date</label>
-                    <input type="email" class="form-control" id="bdate" placeholder="Enter Birth Date" name="empEmail" required disabled event.target./>
+                    <label for="bdate"><span style="color:red">*</span>Birth-Date</label>
+                    <input type="date" class="form-control" id="bdate" placeholder="Enter Birth Date"  required disabled />
                 </div>
                 <div class="form-group">
-                    <label for="empEmail"><span style="color:red">*</span>Address:</label>
-                    <input type="email" class="form-control" id="address" placeholder="Enter Address" name="empEmail" required disabled event.target./>
+                    <label for="address"><span style="color:red">*</span>Address:</label>
+                    <input type="text" class="form-control" id="address" placeholder="Enter Address" required disabled />
                 </div>
                 <div class="form-group">
-                    <label for="empEmail"><span style="color:red">*</span>Enrollment-Date:</label>
-                    <input type="email" class="form-control" id="edate" placeholder="Enter Enrollment Date" name="empEmail" required disabled event.target./>
+                    <label for="edate"><span style="color:red">*</span>Enrollment-Date:</label>
+                    <input type="date" class="form-control" id="edate" placeholder="Enter Enrollment Date" required disabled/>
                 </div>
-                <input type="button" class="btn btn-primary" id="save" value="Save" onclick="save();"  disabled/>
-                <input type="button" class="btn btn-primary" id="update" value="Update" onclick="update();" disabled/>
-                <input type="button" class="btn btn-primary" id="reset" value="Reset" onclick="reset();" disabled/>
+                <input type="button" class="btn btn-primary" id="save" value="Save" onclick="saveData();"  disabled/>
+                <input type="button" class="btn btn-primary" id="update" value="Update" onclick="updateData();" disabled/>
+                <input type="reset" class="btn btn-primary" id="reset" value="Reset" onclick="reset();" disabled/>
             </form>
         </div>
         <script>
@@ -63,111 +63,147 @@
             const updateBtn=$("#update");
             const resetBtn=$("#reset");
             const priIn=$("#roll");
+            recNo=undefined;
             priIn.focus();
 
 
             
             function getdata() {
-                var jsonObjStr = validateAndGetFormData();
-                if (jsonStr === "") {
+                var jsonObjStr = JSON.stringify({"Roll-No":priIn.val()});
+                if (jsonObjStr === "") {
                     return;
                 }
                 var reqString = createGET_BY_KEYRequest(token, dbname, relationName, jsonObjStr);
-                alert(putReqStr);
+                alert(reqString);
+                console.log(reqString);
                 jQuery.ajaxSetup({ async: false });
                 var resultObj = executeCommandAtGivenBaseUrl(reqString, dbBaseUrl, "/api/irl");
-                alert(JSON.stringify(resultObj));
                 jQuery.ajaxSetup({ async: true });
                 if(resultObj.status===400){
                     saveBtn.prop("disabled",false);
                     resetBtn.prop("disabled",false);
-                    $("#name").prop("disabled",false);
-                    $("#name").focus();
-                    rmdis();
+                    rmdis();  
                 }
                 else if(resultObj.status===200){
                     priIn.prop("disabled",true);
-                    fillForm();
+                    fillForm(resultObj);
                     updateBtn.prop("disabled",false);
                     resetBtn.prop("disabled",false);
-                    $("#name").prop("disabled",false);
-                    $("#name").focus();
                     rmdis();
+                    
                 }
             }
+
+            function fillForm(x){
+                var row=JSON.parse(x.data)['record'];
+                recNo=JSON.parse(x.data)['rec_no'];
+                $("#name").val(row["Full-Name"]);
+                $("#class").val(row["Class"]);
+                $("#bdate").val(row["Birth-Date"]);
+                $("#address").val(row["Address"]);
+                $("#edate").val(row["Enrollment-Date"]);
+                $("#name").focus();
+                
+            }
+
             function rmdis(event){
-                let eles=$('input');
-                for(let i=0;i<eles.length;i++){
-                    if(eles[i].id=='roll'){
-                        continue;
-                    }
-                    eles[i].prop('disabled',false);
-                }
+                $("#name").prop("disabled",false);
+                $("#class").prop("disabled",false);
+                $("#bdate").prop("disabled",false);
+                $("#address").prop("disabled",false);
+                $("#edate").prop("disabled",false);
+                $("#name").focus();
             }
             
-            function saveEmployee() {
-                var jsonStr = validateAndGetFormData();
-                if (jsonStr === "") {
+            function saveData() {
+                var jsonObj = validateAndGetFormData();
+                if (jsonObj === "") {
                     return;
                 }
-                var putReqStr = createPUTRequest(token, jsonStr, db, rel);
+                var putReqStr = createPUTRequest(token, jsonObj, dbname, relationName);
                 alert(putReqStr);
                 jQuery.ajaxSetup({ async: false });
-                var resultObj = executeCommand(putReqStr, "http://api.login2explore.com:5577", "/api/iml");
-                alert(JSON.stringify(resultObj));
+                var resultObj =  executeCommandAtGivenBaseUrl(putReqStr, dbBaseUrl, "/api/iml");
                 jQuery.ajaxSetup({ async: true });
                 resetForm();
             }
             
-            
+            function updateData() {
+                var jsonObj = validateAndGetFormData();
+                if (jsonObj === "") {
+                    return;
+                }
+                var putReqStr = createUPDATERecordRequest(token, jsonObj, dbname, relationName, recNo);
+                alert(putReqStr);
+                jQuery.ajaxSetup({ async: false });
+                var resultObj =  executeCommandAtGivenBaseUrl(putReqStr, dbBaseUrl, "/api/iml");
+                jQuery.ajaxSetup({ async: true });
+                resetForm();
+            }
             
             function validateAndGetFormData() {
-                var empIdVar = $("#empId").val();
-                if (empIdVar === "") {
-                    alert("Employee ID Required Value");
-                    $("#empId").focus();
+                var rollNo = priIn.val();
+                if (rollNo === "") {
+                    alert("Roll Number is Required Value");
+                    priIn.focus();
                     return "";
                 }
-                var empNameVar = $("#empName").val();
-                if (empNameVar === "") {
-                    alert("Employee Name is Required Value");
+                var name = $("#name").val();
+                if (name === "") {
+                    alert("Student Name is Required Value");
                     $("#empName").focus();
                     return "";
                 }
-                var empEmailVar = $("#empEmail").val();
-                if (empEmailVar === "") {
+                var classs = $("#class").val();
+                if (classs === "") {
                     alert("Employee Email is Required Value");
                     $("#empEmail").focus();
                     return "";
                 }
+                var dob = $("#bdate").val();
+                if (dob === "") {
+                    alert("Birth Date is Required Value");
+                    $("#bdate").focus();
+                    return "";
+                }
+                var adre = $("#address").val();
+                if (adre === "") {
+                    alert("Address is Required Value");
+                    $("#address").focus();
+                    return "";
+                }
+                var edate = $("#edate").val();
+                if (edate === "") {
+                    alert("Enrollment Date is Required Value");
+                    $("#edate").focus();
+                    return "";
+                }
                 var jsonStrObj = {
-                    empId: empIdVar,
-                    empName: empNameVar,
-                    empEmail: empEmailVar,
+                    "Roll-No": rollNo,
+                    "Full-Name":name,
+                    "Class":classs,
+                    "Birth-Date":dob,
+                    "Address":adre,
+                    "Enrollment-Date":edate
                 };
                 return JSON.stringify(jsonStrObj);
             }
             
-            function createPUTRequest(connToken, jsonObj, dbName, relName) {
-                var putRequest = "{\n" + '"token" : "' + connToken + '",' + '"dbName": "' + dbName + '",\n' + '"cmd" : "PUT",\n' + '"rel" : "' + relName + '",' + '"jsonStr": \n' + jsonObj + "\n" + "}";
-                return putRequest;
-            }
-            function executeCommand(reqString, dbBaseUrl, apiEndPointUrl) {
-                var url = dbBaseUrl + apiEndPointUrl;
-                var jsonObj;
-                $.post(url, reqString, function (result) {
-                    jsonObj = JSON.parse(result);
-                }).fail(function (result) {
-                    var dataJsonObj = result.responseText;
-                    jsonObj = JSON.parse(dataJsonObj);
-                });
-                return jsonObj;
-            }
             function resetForm() {
-                $("#empId").val("");
-                $("#empName").val("");
-                $("#empEmail").val("");
-                $("#empId").focus();
+                priIn.val("");
+                $("#name").val("");
+                $("#class").val("");
+                $("#bdate").val("");
+                $("#address").val("");
+                $("#edate").val("");
+                $("#name").prop("disabled",true);
+                $("#class").prop("disabled",true);
+                $("#bdate").prop("disabled",true);
+                $("#address").prop("disabled",true);
+                $("#edate").prop("disabled",true);
+                priIn.prop("disabled",false);
+                priIn.focus();
+                
             }
             
         </script>
