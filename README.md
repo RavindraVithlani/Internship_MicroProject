@@ -1,1 +1,4 @@
-# Internship_MicroProject
+<h2>Student Enrollment Form</h2>
+The "Student Enrollment Form using JsonPowerDB" is a micro project designed to create a user-friendly web-based form for enrolling students in a school's database. This project revolves around the concept of utilizing JsonPowerDB, a high-performance NoSQL database that combines the strengths of both document-oriented databases and key-value stores. The heart of the project is a simple, yet effective, student enrollment form, which captures essential information about students and stores it in the STUDENT-TABLE relation of the SCHOOL-DB database.
+
+The form includes fields for Roll No., Full Name, Class, Birth Date, Address, and Enrollment Date, and leverages the primary key, Roll No., to uniquely identify each student. The form provides Create, Read, and Update (CRUD) operations, enabling school administrators to manage student data efficiently.
