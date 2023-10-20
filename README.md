@@ -6,14 +6,14 @@ The form includes fields for Roll No., Full Name, Class, Birth Date, Address, an
 <h4>Benefits of using JsonPowerDB:</h4>
 The utilization of JsonPowerDB in this project brings several significant advantages:
 
-High Performance: JsonPowerDB is known for its exceptional speed and high-performance capabilities. This ensures that data retrieval and storage processes in the student enrollment form are quick and responsive, making the user experience efficient.
+<h6>High Performance:</h6> JsonPowerDB is known for its exceptional speed and high-performance capabilities. This ensures that data retrieval and storage processes in the student enrollment form are quick and responsive, making the user experience efficient.
 
-Schema-less: JsonPowerDB is a schema-less database, allowing for flexibility in data modeling. In the context of the student enrollment form, this means that administrators can easily adapt and modify the data structure to accommodate any changes in student data requirements without complex schema migrations.
+<h6>Schema-less:</h6> JsonPowerDB is a schema-less database, allowing for flexibility in data modeling. In the context of the student enrollment form, this means that administrators can easily adapt and modify the data structure to accommodate any changes in student data requirements without complex schema migrations.
 
-NoSQL Features: As a NoSQL database, JsonPowerDB offers benefits like horizontal scalability, support for unstructured data, and easy integration with various programming languages and platforms. This makes it a versatile choice for a wide range of applications, including this student enrollment form.
+<h6>NoSQL Features:</h6> As a NoSQL database, JsonPowerDB offers benefits like horizontal scalability, support for unstructured data, and easy integration with various programming languages and platforms. This makes it a versatile choice for a wide range of applications, including this student enrollment form.
 
-Simplicity: JsonPowerDB is designed to be simple to use, making it an ideal choice for micro projects and applications with limited development resources. The database management process is straightforward, and it doesn't require extensive setup or maintenance.
+<h6>Simplicity:</h6> JsonPowerDB is designed to be simple to use, making it an ideal choice for micro projects and applications with limited development resources. The database management process is straightforward, and it doesn't require extensive setup or maintenance.
 
-Real-time Data: JsonPowerDB supports real-time data synchronization, making it an excellent choice for applications that require up-to-the-minute data access and updates. This real-time capability ensures that student information is always current.
+<h6>Real-time Data:</h6> JsonPowerDB supports real-time data synchronization, making it an excellent choice for applications that require up-to-the-minute data access and updates. This real-time capability ensures that student information is always current.
 
-Cost-Effective: JsonPowerDB offers a cost-effective solution for small to medium-sized projects, eliminating the need for expensive licensing and infrastructure. This makes it an attractive choice for educational institutions with budget constraints.
+<h6>Cost-Effective:</h6> JsonPowerDB offers a cost-effective solution for small to medium-sized projects, eliminating the need for expensive licensing and infrastructure. This makes it an attractive choice for educational institutions with budget constraints.
